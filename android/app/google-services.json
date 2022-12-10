@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "978172978611",
+    "project_id": "herbs-948b7",
+    "storage_bucket": "herbs-948b7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:978172978611:android:0fa419eb570e2f5eb017c6",
+        "android_client_info": {
+          "package_name": "com.example.YOLO"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "978172978611-a9u7nsco511c3fp3beiv7fg9shmi96sk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7gSnHRGaDdNEZMscxsrUJ-DET6rsomik"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "978172978611-a9u7nsco511c3fp3beiv7fg9shmi96sk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "978172978611-ve2quiq80olhojp5l4bin6im1n67b9n2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.YOLO"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
