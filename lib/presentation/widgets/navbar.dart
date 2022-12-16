@@ -1,11 +1,16 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:tflite/tflite.dart';
+import 'package:flutter_application_1/tflite/mbv2_classifier.dart';
+import 'package:logger/logger.dart';
+//import 'package:tflite/tflite.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:tflite_flutter_helper/tflite_flutter_helper.dart' as tfl_helper;
 // import 'listitem.dart';
 import 'favourite.dart';
 import '../home.dart';
 import 'listitem.dart';
+
+import 'package:image/image.dart' as img;
 
 class Navbar extends StatefulWidget {
   @override
@@ -33,48 +38,65 @@ class _NavbarState extends State<Navbar> {
 
   final picker = ImagePicker(); //allows us to pick image from gallery or camera
 
+  final ImagePicker imgpicker = ImagePicker();
+
+  late MBV2_Classifier _classifier;
+
+  var logger = Logger();
+
+  //File? _image;
+
+  Image? _imageWidget;
+
+  img.Image? fox;
+
+  tfl_helper.Category? category;
+
+  //final picker = ImagePicker(); //allows us to pick image from gallery or camera
+
   @override
   void initState() {
     //initS is the first function that is executed by default when this class is called
     super.initState();
-    loadModel().then((value) {
-      setState(() {});
-    });
+    // loadModel().then((value) {
+    //   setState(() {});
+    // });
+    _classifier = MBV2_ClassifierQuant();
   }
 
   @override
   void dispose() {
     //dis function disposes and clears our memory
     super.dispose();
-    Tflite.close();
+    //Tflite.close();
   }
 
-  classifyImage(File image) async {
-    //this function runs the model on the image
-    print(image.path);
-    var output = await Tflite.runModelOnImage(
-      path: image.path,
-      numResults: 10, //the amout of categories our neural network can predict
-      threshold: 0.5,
-      imageMean: 127.5,
-      imageStd: 127.5,
-    );
-    print(output);
-    setState(() {
-      _loading = false;
-      _output = [output];
-      name = _output[0][0]['label'];
-      percent = _output[0][0]['confidence'];
-      print(_output);
-      _children[1] = Home(name: name, percent: percent);
-    });
-  }
+  // classifyImage(File image) async {
+  //   //this function runs the model on the image
+  //   print(image.path);
+  //   var output = await Tflite.runModelOnImage(
+  //     path: image.path,
+  //     numResults: 10, //the amout of categories our neural network can predict
+  //     threshold: 0.5,
+  //     imageMean: 127.5,
+  //     imageStd: 127.5,
+  //   );
+  //   print(output);
+  //   setState(() {
+  //     _loading = false;
+  //     _output = [output];
+  //     name = _output[0][0]['label'];
+  //     percent = _output[0][0]['confidence'];
+  //     print(_output);
+  //     _children[1] = Home(name: name, percent: percent);
+  //   });
+  // }
 
-  loadModel() async {
-    //this function loads our model
-    await Tflite.loadModel(
-        model: 'assets/model.tflite', labels: 'assets/labels.txt');
-  }
+  // loadModel() async {
+  //   //this function loads our model
+  //   await Tflite.loadModel(
+  //       model: 'assets/model.tflite', labels: 'assets/labels.txt');
+  // }
 
   pickImage() async {
     //this function to grab the image from camera
@@ -83,21 +105,51 @@ class _NavbarState extends State<Navbar> {
 
     setState(() {
       _image = File(image.path);
+      _imageWidget = Image.file(_image);
+
+      _predict();
     });
-    classifyImage(_image);
+    //classifyImage(_image);
   }
 
-  pickGalleryImage() async {
-    //this function to grab the image from gallery
-    var image = await picker.pickImage(source: ImageSource.gallery);
-    if (image == null) {
-      return null;
-    } else {
-      setState(() {
-        _image = File(image.path);
-      });
-      classifyImage(_image);
-    }
+  // pickGalleryImage() async {
+  //   //this function to grab the image from gallery
+  //   var image = await picker.pickImage(source: ImageSource.gallery);
+  //   if (image == null) {
+  //     return null;
+  //   } else {
+  //     setState(() {
+  //       _image = File(image.path);
+  //     });
+  //     classifyImage(_image);
+  //   }
+  // }
+
+  Future getImage() async {
+    final pickedFile = await imgpicker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      _image = File(pickedFile!.path);
+      _imageWidget = Image.file(_image);
+
+      _predict();
+    });
+  }
+
+  void _predict() async {
+    img.Image imageInput = img.decodeImage(_image.readAsBytesSync())!;
+    //String tempBase64string = base64.encode(_image.readAsBytesSync());
+    var pred = _classifier.predict(imageInput);
+
+    setState(() {
+      category = pred;
+      //base64string = tempBase64string;
+      _loading = false;
+      name = category!.label;
+      percent = category!.score;
+      print(category);
+      _children[1] = Home(name: name, percent: percent);
+    });
   }
 
   bool pressCategory = false;
@@ -242,7 +294,7 @@ class _NavbarState extends State<Navbar> {
                             InkWell(
                                 onTap: () {
                                   //pickGalleryImage and show image in modal bottom sheet
-                                  pickGalleryImage();
+                                  getImage();
                                   Navigator.pop(context);
                                   //show image in modal bottom sheet
                                 },

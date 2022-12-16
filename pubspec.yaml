@@ -39,11 +39,19 @@ dependencies:
 
   image_picker: ^0.8.6
 
-  tflite: ^1.1.2
+  # tflite: ^1.1.2
 
   firebase_core: ^2.3.0
   firebase_database: ^10.0.6
   mongo_dart: ^0.8.1
+  tflite_flutter: ^0.9.0
+  tflite_flutter_helper: 
+    git:
+      url: https://github.com/acefail/tflite_flutter_helper.git
+      ref: flutter3+camera0.10
+  image: ^3.2.2
+  # camera: ^0.10.0+4
+  logger: ^1.1.0
 
   cloud_firestore: 
 
