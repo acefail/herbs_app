@@ -76,9 +76,7 @@ class _HomeState extends State<Home> {
                     padding: EdgeInsets.only(top: 16.0),
                   ),
                   Text(
-                    'Chính xác: ' +
-                        (widget.percent * 100).toStringAsFixed(2) +
-                        '%',
+                    'Chính xác: ${(widget.percent * 100).toStringAsFixed(2)}%',
                     style: const TextStyle(fontSize: 20),
                   ),
                   //add button to see details
@@ -87,7 +85,7 @@ class _HomeState extends State<Home> {
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        primary: const Color(0xFF29D890)),
+                        backgroundColor: const Color(0xFF29D890)),
                     onPressed: data[0]['name'] == "Hãy chọn 1 ảnh"
                         ? () {}
                         : () {

@@ -287,8 +287,8 @@ class _DetailsState extends State<Details> {
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
                         shape: const CircleBorder(),
+                        backgroundColor: const Color(0xFFFF6262),
                         padding: const EdgeInsets.all(13),
-                        primary: const Color(0xFFFF6262),
                         elevation: 15,
                       ),
                       child: const Icon(Icons.favorite, size: 35),
