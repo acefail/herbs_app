@@ -82,8 +82,10 @@ flutter:
 
   assets:
     - assets/labels.txt
+    - assets/yolo_labels.txt
     - assets/model.tflite
     - assets/model_unquant.tflite
+    - assets/yolov5.tflite
     - assets/uploadlabels.txt
     - assets/images/
 

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_application_1/tflite/recognition.dart';
 
 abstract class FirestoreSource {
   //Future<Map<String, dynamic>> getCyclepedia();
@@ -21,6 +22,18 @@ class FirestoreSourceImpl extends FirestoreSource {
   static Future<List<dynamic>> getDataByName(String x) async {
     QuerySnapshot snapshot = await ref.where("name", isEqualTo: x).get();
     return snapshot.docs.map((doc) => doc.data()).toList();
+  }
+
+  static Future<List<dynamic>> getDataByLabels(List<Recognition> recogs) async {
+    var data = [];
+    for (var rec in recogs) {
+      QuerySnapshot snapshot =
+          await ref.where("name", isEqualTo: rec.label).get();
+      if (data.contains(snapshot.docs.map((doc) => doc.data()).toList())) {
+        data.addAll(snapshot.docs.map((doc) => doc.data()).toList());
+      }
+    }
+    return data;
   }
 
   static Future<void> insert(String _name, String _image_base64) async {

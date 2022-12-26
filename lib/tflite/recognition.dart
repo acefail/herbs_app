@@ -2,8 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_application_1/presentation/widgets/camera_view_singleton.dart';
+import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 
 /// Represents the recognition output from the model
+
 class Recognition {
   /// Index of the result
   final int _id;
@@ -54,8 +56,27 @@ class Recognition {
     return transformedRect;
   }
 
+  Rect getRenderLocation(Size actualPreviewSize, double pixelRatio) {
+    final ratioX = pixelRatio;
+    final ratioY = ratioX;
+
+    final transLeft = max(0.1, location!.left * ratioX);
+    final transTop = max(0.1, location!.top * ratioY);
+    final transWidth = min(
+      location!.width * ratioX,
+      actualPreviewSize.width,
+    );
+    final transHeight = min(
+      location!.height * ratioY,
+      actualPreviewSize.height,
+    );
+    final transformedRect =
+        Rect.fromLTWH(transLeft, transTop, transWidth, transHeight);
+    return transformedRect;
+  }
+
   @override
   String toString() {
-    return 'Recognition(id: $id, label: $label, score: $score, location: $location)';
+    return 'Recognition(id: $id, label: $label, score: ${(score * 100).toStringAsPrecision(3)}, location: $location)';
   }
 }

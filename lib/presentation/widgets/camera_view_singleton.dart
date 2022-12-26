@@ -2,9 +2,9 @@ import 'dart:ui';
 
 /// Singleton to record size related data
 class CameraViewSingleton {
-  static double? ratio;
-  static Size? screenSize;
-  static Size? inputImageSize;
-  static Size? get actualPreviewSize =>
-      Size(screenSize!.width, screenSize!.width * ratio!);
+  static double ratio = 0;
+  static Size screenSize = const Size(0, 0);
+  static Size inputImageSize = const Size(0, 0);
+  static Size get actualPreviewSize =>
+      Size(screenSize.width, screenSize.width * ratio);
 }
