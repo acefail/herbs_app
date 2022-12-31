@@ -26,14 +26,16 @@ class FirestoreSourceImpl extends FirestoreSource {
 
   static Future<List<dynamic>> getDataByLabels(List<Recognition> recogs) async {
     var data = [];
-    for (var rec in recogs) {
-      QuerySnapshot snapshot =
-          await ref.where("name", isEqualTo: rec.label).get();
-      if (data.contains(snapshot.docs.map((doc) => doc.data()).toList())) {
+    var names = recogs.map((e) => e.label).toList();
+    names = names.toSet().toList();
+    for (var name in names) {
+      QuerySnapshot snapshot = await ref.where("name", isEqualTo: name).get();
+      if (!data.contains(snapshot.docs.map((doc) => doc.data()).toList())) {
         data.addAll(snapshot.docs.map((doc) => doc.data()).toList());
       }
     }
-    return data;
+    var distinctData = data.toSet().toList();
+    return distinctData;
   }
 
   static Future<void> insert(String _name, String _image_base64) async {

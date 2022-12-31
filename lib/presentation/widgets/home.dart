@@ -40,6 +40,7 @@ class _HomeState extends State<Home> {
         //future: MongoDatabase.getDataByName(widget.name),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           List data = snapshot.data ?? [];
+          data.map((e) => print(e['name']));
 
           if (data.isEmpty) {
             data = [
@@ -56,130 +57,160 @@ class _HomeState extends State<Home> {
           Size size = MediaQuery.of(context).size;
 
           return Scaffold(
-            appBar: AppBar(
-              //linear color gradient
-              backgroundColor: const Color(0xFF29D890),
-              title: const Text(
-                'Nhận diện cây thuốc nam',
-                style: TextStyle(
-                    color: Colors.white, fontSize: 20, letterSpacing: 0.8),
+              appBar: AppBar(
+                //linear color gradient
+                backgroundColor: const Color(0xFF29D890),
+                title: const Text(
+                  'Nhận diện cây thuốc nam',
+                  style: TextStyle(
+                      color: Colors.white, fontSize: 20, letterSpacing: 0.8),
+                ),
               ),
-            ),
-            body: Center(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    top: 50, right: 20, left: 20, bottom: 80),
-                child: //Container(
-                    // width: MediaQuery.of(context).size.width,
-                    //child:
-                    Column(children: <Widget>[
-                  // Padding(
-                  //   padding: EdgeInsets.only(top:16.0),
-                  // ),
-                  Text(
-                    data[0]['name'],
-                    style: const TextStyle(fontSize: 20),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.only(top: 16.0),
-                  ),
-                  // Stack(
-                  //   children: [
-                  //     Positioned(
-                  //       left: 0.0,
-                  //       top: 0.0,
-                  //       width: size.width,
-                  //       child: widget.path == null
-                  //           ? Image.memory(base64Decode(data[0]['img64']
-                  //               .replaceAll(RegExp(r'\s+'), '')))
-                  //           : Image.memory(
-                  //               base64Decode(
-                  //                   base64Encode(widget.path!.readAsBytesSync())
-                  //                       .replaceAll(RegExp(r'\s+'), '')),
-                  //             ),
-                  //     ),
-                  //   ],
-                  // ),
-                  Stack(
-                    children: [
-                      Positioned(
-                        child: Container(
-                          width: size.width,
-                          // decoration: BoxDecoration(
-                          //   image: DecorationImage(
-                          //     image: widget.path == null
-                          //         ? Image.memory(base64Decode(data[0]['img64']
-                          //                 .replaceAll(RegExp(r'\s+'), '')))
-                          //             .image
-                          //         : Image.memory(
-                          //             base64Decode(
-                          //                 base64Encode(widget.path!.readAsBytesSync())
-                          //                     .replaceAll(RegExp(r'\s+'), '')),
-                          //           ).image,
-                          //     fit: BoxFit.contain,
-                          //   ),
-                          // ),
-                          child: widget.path == null
-                              ? Image.memory(base64Decode(data[0]['img64']
-                                  .replaceAll(RegExp(r'\s+'), '')))
-                              : Image.memory(
-                                  base64Decode(base64Encode(
-                                          widget.path!.readAsBytesSync())
-                                      .replaceAll(RegExp(r'\s+'), '')),
-                                ),
-                          // child: buildBoxes(
-                          //     widget.results,
-                          //     CameraViewSingleton.actualPreviewSize,
-                          //     CameraViewSingleton.ratio),
-                        ),
+              body: SingleChildScrollView(
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 50, bottom: 80),
+                    child: //Container(
+                        // width: MediaQuery.of(context).size.width,
+                        //child:
+                        Column(children: <Widget>[
+                      // Padding(
+                      //   padding: EdgeInsets.only(top:16.0),
+                      // ),
+                      Text(
+                        widget.path == null ? data[0]['name'] : 'Kết quả',
+                        style: const TextStyle(fontSize: 20),
                       ),
-                      ...buildBoxes(widget.results),
-                    ],
-                  ),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 16.0),
+                      ),
+                      // Stack(
+                      //   children: [
+                      //     Positioned(
+                      //       left: 0.0,
+                      //       top: 0.0,
+                      //       width: size.width,
+                      //       child: widget.path == null
+                      //           ? Image.memory(base64Decode(data[0]['img64']
+                      //               .replaceAll(RegExp(r'\s+'), '')))
+                      //           : Image.memory(
+                      //               base64Decode(
+                      //                   base64Encode(widget.path!.readAsBytesSync())
+                      //                       .replaceAll(RegExp(r'\s+'), '')),
+                      //             ),
+                      //     ),
+                      //   ],
+                      // ),
+                      Stack(
+                        children: [
+                          Positioned(
+                            child: Container(
+                              width: size.width,
+                              // decoration: BoxDecoration(
+                              //   image: DecorationImage(
+                              //     image: widget.path == null
+                              //         ? Image.memory(base64Decode(data[0]['img64']
+                              //                 .replaceAll(RegExp(r'\s+'), '')))
+                              //             .image
+                              //         : Image.memory(
+                              //             base64Decode(
+                              //                 base64Encode(widget.path!.readAsBytesSync())
+                              //                     .replaceAll(RegExp(r'\s+'), '')),
+                              //           ).image,
+                              //     fit: BoxFit.contain,
+                              //   ),
+                              // ),
+                              child: widget.path == null
+                                  ? Image.memory(base64Decode(data[0]['img64']
+                                      .replaceAll(RegExp(r'\s+'), '')))
+                                  : Image.memory(
+                                      base64Decode(base64Encode(
+                                              widget.path!.readAsBytesSync())
+                                          .replaceAll(RegExp(r'\s+'), '')),
+                                    ),
+                              // child: buildBoxes(
+                              //     widget.results,
+                              //     CameraViewSingleton.actualPreviewSize,
+                              //     CameraViewSingleton.ratio),
+                            ),
+                          ),
+                          ...buildBoxes(widget.results),
+                        ],
+                      ),
 
-                  //],
-                  //),
-                  // CircularPercentIndicator(
-                  //   radius: 110.0,
-                  //   lineWidth: 10.0,
-                  //   animation: true,
-                  //   percent: widget.percent,
-                  //   center: CircleAvatar(
-                  //     backgroundImage: Image.memory(base64Decode(
-                  //             data[0]['img64'].replaceAll(RegExp(r'\s+'), '')))
-                  //         .image,
-                  //     radius: 100.0,
-                  //   ),
-                  //   progressColor: Colors.green,
-                  // ),
-                  const Padding(
-                    padding: EdgeInsets.only(top: 16.0),
+                      //],
+                      //),
+                      // CircularPercentIndicator(
+                      //   radius: 110.0,
+                      //   lineWidth: 10.0,
+                      //   animation: true,
+                      //   percent: widget.percent,
+                      //   center: CircleAvatar(
+                      //     backgroundImage: Image.memory(base64Decode(
+                      //             data[0]['img64'].replaceAll(RegExp(r'\s+'), '')))
+                      //         .image,
+                      //     radius: 100.0,
+                      //   ),
+                      //   progressColor: Colors.green,
+                      // ),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 16.0),
+                      ),
+                      //add button to see details
+                      const Padding(
+                        padding: EdgeInsets.only(top: 16.0),
+                      ),
+                      Column(
+                        children: data[0]['name'] == "Hãy chọn 1 ảnh"
+                            ? []
+                            : data
+                                .map((e) => Row(
+                                      children: [
+                                        const Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 16.0),
+                                        ),
+                                        Text(
+                                          e['name'],
+                                          style: const TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        const Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 16.0),
+                                        ),
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  const Color(0xFF29D890)),
+                                          onPressed: data[0]['name'] ==
+                                                  "Hãy chọn 1 ảnh"
+                                              ? () {}
+                                              : () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              Details(
+                                                                  item: data)));
+                                                },
+                                          child: const Text(
+                                            'Xem chi tiết',
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.white),
+                                          ),
+                                        ),
+                                      ],
+                                    ))
+                                .toList(),
+                      ),
+                    ]),
+                    //),
                   ),
-                  //add button to see details
-                  const Padding(
-                    padding: EdgeInsets.only(top: 16.0),
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF29D890)),
-                    onPressed: data[0]['name'] == "Hãy chọn 1 ảnh"
-                        ? () {}
-                        : () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Details(item: data)));
-                          },
-                    child: const Text(
-                      'Xem chi tiết',
-                      style: TextStyle(fontSize: 20, color: Colors.white),
-                    ),
-                  ),
-                ]),
-                //),
-              ),
-            ),
-          );
+                ),
+              ));
         }); //end return
   }
 
@@ -206,7 +237,6 @@ class _HomeState extends State<Home> {
       return const [SizedBox()];
     }
     return recognitions.map((result) {
-      print(result.location);
       return BoundingBox(
         result: result,
         actualPreviewSize: CameraViewSingleton.actualPreviewSize,
@@ -232,9 +262,6 @@ class BoundingBox extends StatelessWidget {
       actualPreviewSize,
       ratio,
     );
-    print(renderLocation);
-    print(actualPreviewSize);
-    print(ratio);
     return Positioned(
       left: renderLocation.left,
       top: renderLocation.top,

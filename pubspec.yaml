@@ -86,7 +86,9 @@ flutter:
     - assets/model.tflite
     - assets/model_unquant.tflite
     - assets/yolov5.tflite
+    - assets/best-fp16.tflite
     - assets/uploadlabels.txt
+    - assets/best-fp16.txt
     - assets/images/
 
   # To add assets to your application, add an assets section, like this:

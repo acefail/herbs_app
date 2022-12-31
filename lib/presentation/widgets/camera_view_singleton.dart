@@ -6,5 +6,5 @@ class CameraViewSingleton {
   static Size screenSize = const Size(0, 0);
   static Size inputImageSize = const Size(0, 0);
   static Size get actualPreviewSize =>
-      Size(screenSize.width, screenSize.width * ratio);
+      Size(screenSize.width, inputImageSize.height * ratio);
 }

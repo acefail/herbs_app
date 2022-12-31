@@ -141,7 +141,7 @@ class _NavbarState extends State<Navbar> {
     img.Image imageInput = img.decodeImage(_image.readAsBytesSync())!;
     //String tempBase64string = base64.encode(_image.readAsBytesSync());
     if (Platform.isAndroid) {
-      imageInput = img.copyRotate(imageInput, 90);
+      //imageInput = img.copyRotate(imageInput, 90);
     }
     Map<String, dynamic>? results = _classifier.predict(imageInput);
 
@@ -155,7 +155,7 @@ class _NavbarState extends State<Navbar> {
       Size screenSize = MediaQuery.of(context).size;
       CameraViewSingleton.screenSize = screenSize;
       CameraViewSingleton.ratio =
-          screenSize.width / imageInput.height.toDouble();
+          screenSize.width / imageInput.width.toDouble();
       //print(imageSize);
       _children[1] = Home(path: _image, results: results!['recognitions']);
     });

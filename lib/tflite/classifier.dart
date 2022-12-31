@@ -18,21 +18,21 @@ class Classifier {
   /// Labels file loaded as list
   late List<String> _labels;
 
-  static const String MODEL_FILE_NAME = "yolov5.tflite";
-  static const String LABEL_FILE_NAME = "yolo_labels.txt";
+  static const String MODEL_FILE_NAME = "best-fp16.tflite";
+  static const String LABEL_FILE_NAME = "best-fp16.txt";
 
-  /// Input size of image (height = width = 300)
+  /// Input size of image (height = width = 640)
   static const int INPUT_SIZE = 640;
 
   /// Result score threshold
   //static const double THRESHOLD = 0.5;
 
   /// Non-maximum suppression threshold
-  static double mNmsThresh = 0.6;
+  static double mNmsThresh = 0.45;
 
   static const int clsNum = 2;
-  static const double objConfTh = 0.50;
-  static const double clsConfTh = 0.50;
+  static const double objConfTh = 0.25;
+  static const double clsConfTh = 0.25;
 
   /// [ImageProcessor] used to pre-process the image
   late ImageProcessor imageProcessor;
@@ -87,6 +87,7 @@ class Classifier {
     try {
       _labels = labels ?? await FileUtil.loadLabels("assets/$LABEL_FILE_NAME");
       print("labels ready");
+      print(_labels);
     } catch (e) {
       print("Error while loading labels: $e");
     }
@@ -95,9 +96,11 @@ class Classifier {
   /// Pre-process the image
   TensorImage getProcessedImage(TensorImage inputImage) {
     padSize = max(inputImage.height, inputImage.width);
+    print(padSize);
     imageProcessor = ImageProcessorBuilder()
         .add(ResizeWithCropOrPadOp(padSize, padSize))
         .add(ResizeOp(INPUT_SIZE, INPUT_SIZE, ResizeMethod.BILINEAR))
+        //.add(NormalizeOp(0, 255))
         .build();
     inputImage = imageProcessor.process(inputImage);
     return inputImage;
@@ -358,22 +361,25 @@ class Classifier {
     /// make recognition
     final recognitions = <Recognition>[];
     List<double> results = outputLocations.getDoubleList();
-    print(results);
+    //print(results);
     for (var i = 0; i < results.length; i += (5 + clsNum)) {
       // check obj conf
       if (results[i + 4] < objConfTh) continue;
+      //print(results[i + 4]);
+      //print(i);
 
       /// check cls conf
       // double maxClsConf = results[i + 5];
-      double maxClsConf =
-          results.sublist(i + 5, i + 5 + clsNum - 1).reduce(max);
+      double score = results[i + 4];
+      double maxClsConf = results.sublist(i + 4, i + 5 + clsNum).reduce(max);
+      //print(maxClsConf);
+      //print(i);
       if (maxClsConf < clsConfTh) continue;
 
       /// add detects
       // int cls = 0;
-      int cls = results.sublist(i + 5, i + 5 + clsNum - 1).indexOf(maxClsConf) %
-          clsNum;
-      //print(maxClsConf);
+      int cls =
+          results.sublist(i + 5, i + 5 + clsNum).indexOf(maxClsConf) % clsNum;
       //print(cls);
       Rect outputRect = Rect.fromCenter(
         center: Offset(
@@ -383,10 +389,11 @@ class Classifier {
         width: results[i + 2] * INPUT_SIZE,
         height: results[i + 3] * INPUT_SIZE,
       );
+
       Rect transformRect = imageProcessor.inverseTransformRect(
           outputRect, image.height, image.width);
 
-      recognitions.add(Recognition(i, labels[cls], maxClsConf, transformRect));
+      recognitions.add(Recognition(i, _labels[cls], score, transformRect));
     }
     var predictElapsedTime =
         DateTime.now().millisecondsSinceEpoch - predictStartTime;

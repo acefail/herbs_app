@@ -58,20 +58,22 @@ class Recognition {
 
   Rect getRenderLocation(Size actualPreviewSize, double pixelRatio) {
     final ratioX = pixelRatio;
+    // final ratioY = actualPreviewSize.height / actualPreviewSize.width * ratioX;
     final ratioY = ratioX;
-
+    final gain = min(
+        CameraViewSingleton.inputImageSize.width / actualPreviewSize.width,
+        CameraViewSingleton.inputImageSize.height / actualPreviewSize.height);
+    //final pad = (CameraViewSingleton.inputImageSize.width - actualPreviewSize.width * gain) / 2, (CameraViewSingleton.inputImageSize.height - actualPreviewSize.height * gain) / 2
     final transLeft = max(0.1, location!.left * ratioX);
     final transTop = max(0.1, location!.top * ratioY);
-    final transWidth = min(
-      location!.width * ratioX,
-      actualPreviewSize.width,
-    );
-    final transHeight = min(
-      location!.height * ratioY,
-      actualPreviewSize.height,
-    );
+    final transWidth = location!.width / gain;
+
+    final transHeight = location!.height / gain;
+
     final transformedRect =
         Rect.fromLTWH(transLeft, transTop, transWidth, transHeight);
+    // final transformedRect = Rect.fromLTWH(
+    //     location!.left, location!.top, location!.width, location!.height);
     return transformedRect;
   }
 
