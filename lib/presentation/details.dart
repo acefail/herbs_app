@@ -1,10 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/tflite/mbv2_classifier.dart';
+import 'package:logger/logger.dart';
 import 'dart:io';
-import 'package:tflite/tflite.dart';
+//mport 'package:tflite/tflite.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 import 'upload.dart';
+import 'package:image/image.dart' as img;
 
 class Details extends StatefulWidget {
   final item;
@@ -20,38 +24,174 @@ class _DetailsState extends State<Details> {
   String res = "";
   final picker = ImagePicker(); //allows us to pick image from gallery or camera
 
+  final ImagePicker imgpicker = ImagePicker();
+
+  late MBV2_Classifier _classifier;
+
+  var logger = Logger();
+
+  //File? _image;
+
+  Image? _imageWidget;
+
+  img.Image? fox;
+
+  Category? category;
+
   @override
   void initState() {
     //initS is the first function that is executed by default when this class is called
     super.initState();
-    loadModel().then((value) {
-      setState(() {});
-    });
+    // loadModel().then((value) {
+    //   setState(() {});
+    // });
+    _classifier = MBV2_ClassifierQuant();
   }
 
   @override
   void dispose() {
     //dis function disposes and clears our memory
     super.dispose();
-    Tflite.close();
+    //Tflite.close();
   }
 
-  classifyImage(File image) async {
-    //this function runs the model on the image
-    var output = await Tflite.runModelOnImage(
-      path: image.path,
-      numResults: 36, //the amout of categories our neural network can predict
-      threshold: 0.5,
-      imageMean: 127.5,
-      imageStd: 127.5,
-    );
-    print("output: $output");
+  // classifyImage(File image) async {
+  //   //this function runs the model on the image
+  //   var output = await Tflite.runModelOnImage(
+  //     path: image.path,
+  //     numResults: 36, //the amout of categories our neural network can predict
+  //     threshold: 0.5,
+  //     imageMean: 127.5,
+  //     imageStd: 127.5,
+  //   );
+  //   print("output: $output");
+  //   setState(() {
+  //     _loading = false;
+  //     _output = [output];
+  //     res = _output[0][0]['confidence'] > 0.8
+  //         ? 'Đây là: ${_output[0][0]['label']}\nĐộ chính xác: ${(_output[0][0]['confidence'] * 100).toStringAsFixed(2)}'
+  //         : 'Chưa thể kết luận được';
+  //   });
+  //   showModalBottomSheet<void>(
+  //     context: context,
+  //     shape: const RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.all(Radius.circular(20.0)),
+  //     ),
+  //     builder: (BuildContext context) {
+  //       return SizedBox(
+  //         height: 800,
+  //         child: Column(
+  //           children: <Widget>[
+  //             //button icon close in left top corner
+  //             Row(
+  //               mainAxisAlignment: MainAxisAlignment.end,
+  //               children: <Widget>[
+  //                 IconButton(
+  //                   icon: const Icon(Icons.close),
+  //                   onPressed: () {
+  //                     Navigator.pop(context);
+  //                   },
+  //                 ),
+  //               ],
+  //             ),
+  //             Container(
+  //               height: 200,
+  //               width: 200,
+  //               decoration: BoxDecoration(
+  //                 border: Border.all(color: Colors.blueAccent),
+  //                 borderRadius: const BorderRadius.all(Radius.circular(
+  //                         20.0) //                 <--- border radius here
+  //                     ),
+  //                 boxShadow: [
+  //                   BoxShadow(
+  //                     color: Colors.grey.withOpacity(0.5),
+  //                     spreadRadius: 5,
+  //                     blurRadius: 7,
+  //                     offset: const Offset(0, 3), // changes position of shadow
+  //                   ),
+  //                 ],
+  //               ),
+  //               child: ClipRRect(
+  //                 borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+  //                 child: Image.file(image, fit: BoxFit.fill),
+  //               ),
+  //             ),
+  //             Container(
+  //               margin: const EdgeInsets.only(top: 20),
+  //               child: Text(
+  //                 res,
+  //                 style: const TextStyle(
+  //                     fontSize: 10, fontWeight: FontWeight.bold),
+  //               ),
+  //             ),
+  //             TextButton(
+  //               onPressed: () {
+  //                 Navigator.pop(context);
+  //               },
+  //               child: const Text('Xem chi tiết'),
+  //             )
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
+
+  // loadModel() async {
+  //   //this function loads our model
+  //   await Tflite.loadModel(
+  //       model: 'assets/model.tflite', labels: 'assets/labels.txt');
+  // }
+
+  // pickImage() async {
+  //   //this function to grab the image from camera
+  //   var image = await picker.pickImage(source: ImageSource.camera);
+  //   if (image == null) return null;
+
+  //   setState(() {
+  //     _image = File(image.path);
+  //   });
+  //   classifyImage(_image);
+  // }
+
+  // pickGalleryImage() async {
+  //   //this function to grab the image from gallery
+  //   var image = await picker.pickImage(source: ImageSource.gallery);
+  //   if (image == null) {
+  //     //print('null');
+  //     return null;
+  //   } else {
+  //     //print('not null');
+  //     setState(() {
+  //       _image = File(image.path);
+  //     });
+  //     classifyImage(_image);
+  //   }
+  // }
+
+  Future getImage() async {
+    final pickedFile = await imgpicker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      _image = File(pickedFile!.path);
+      _imageWidget = Image.file(_image);
+
+      _predict();
+    });
+  }
+
+  void _predict() async {
+    img.Image imageInput = img.decodeImage(_image.readAsBytesSync())!;
+    //String tempBase64string = base64.encode(_image.readAsBytesSync());
+    var pred = _classifier.predict(imageInput);
+
     setState(() {
       _loading = false;
-      _output = [output];
-      res = _output[0][0]['confidence'] > 0.8
-          ? 'Đây là: ${_output[0][0]['label']}\nĐộ chính xác: ${(_output[0][0]['confidence'] * 100).toStringAsFixed(2)}'
+      category = pred;
+      res = category!.score > 0.8
+          ? 'Đây là: ${category!.label}\nĐộ chính xác: ${(category!.score * 100).toStringAsFixed(2)}'
           : 'Chưa thể kết luận được';
+      //base64string = tempBase64string;
     });
     showModalBottomSheet<void>(
       context: context,
@@ -94,7 +234,7 @@ class _DetailsState extends State<Details> {
                 ),
                 child: ClipRRect(
                   borderRadius: const BorderRadius.all(Radius.circular(20.0)),
-                  child: Image.file(image, fit: BoxFit.fill),
+                  child: Image.file(_image, fit: BoxFit.fill),
                 ),
               ),
               Container(
@@ -116,38 +256,6 @@ class _DetailsState extends State<Details> {
         );
       },
     );
-  }
-
-  loadModel() async {
-    //this function loads our model
-    await Tflite.loadModel(
-        model: 'assets/model.tflite', labels: 'assets/labels.txt');
-  }
-
-  pickImage() async {
-    //this function to grab the image from camera
-    var image = await picker.pickImage(source: ImageSource.camera);
-    if (image == null) return null;
-
-    setState(() {
-      _image = File(image.path);
-    });
-    classifyImage(_image);
-  }
-
-  pickGalleryImage() async {
-    //this function to grab the image from gallery
-    var image = await picker.pickImage(source: ImageSource.gallery);
-    if (image == null) {
-      //print('null');
-      return null;
-    } else {
-      //print('not null');
-      setState(() {
-        _image = File(image.path);
-      });
-      classifyImage(_image);
-    }
   }
 
   @override
@@ -179,8 +287,8 @@ class _DetailsState extends State<Details> {
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
                         shape: const CircleBorder(),
+                        backgroundColor: const Color(0xFFFF6262),
                         padding: const EdgeInsets.all(13),
-                        primary: const Color(0xFFFF6262),
                         elevation: 15,
                       ),
                       child: const Icon(Icons.favorite, size: 35),
