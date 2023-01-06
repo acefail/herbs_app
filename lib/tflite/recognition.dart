@@ -37,24 +37,24 @@ class Recognition {
   ///
   /// This is the actual location where rectangle is rendered on
   /// the screen
-  Rect get renderLocation {
-    // ratioX = screenWidth / imageInputWidth
-    // ratioY = ratioX if image fits screenWidth with aspectRatio = constant
+  // Rect get renderLocation {
+  //   // ratioX = screenWidth / imageInputWidth
+  //   // ratioY = ratioX if image fits screenWidth with aspectRatio = constant
 
-    double? ratioX = CameraViewSingleton.ratio;
-    double? ratioY = ratioX;
+  //   double? ratioX = CameraViewSingleton.ratio;
+  //   double? ratioY = ratioX;
 
-    double transLeft = max(0.1, location!.left * ratioX!);
-    double transTop = max(0.1, location!.top * ratioY!);
-    double transWidth = min(
-        location!.width * ratioX, CameraViewSingleton.actualPreviewSize!.width);
-    double transHeight = min(location!.height * ratioY,
-        CameraViewSingleton.actualPreviewSize!.height);
+  //   double transLeft = max(0.1, location!.left * ratioX!);
+  //   double transTop = max(0.1, location!.top * ratioY!);
+  //   double transWidth = min(
+  //       location!.width * ratioX, CameraViewSingleton.actualPreviewSize!.width);
+  //   double transHeight = min(location!.height * ratioY,
+  //       CameraViewSingleton.actualPreviewSize.height);
 
-    Rect transformedRect =
-        Rect.fromLTWH(transLeft, transTop, transWidth, transHeight);
-    return transformedRect;
-  }
+  //   Rect transformedRect =
+  //       Rect.fromLTWH(transLeft, transTop, transWidth, transHeight);
+  //   return transformedRect;
+  // }
 
   Rect getRenderLocation(Size actualPreviewSize, double pixelRatio) {
     final ratioX = pixelRatio;
