@@ -279,7 +279,7 @@ class _DetailsState extends State<Details> {
                 clipBehavior: Clip.none,
                 children: [
                   Image.memory(base64Decode(
-                      widget.item[0]['img64'].replaceAll(RegExp(r'\s+'), ''))),
+                      widget.item['img64'].replaceAll(RegExp(r'\s+'), ''))),
                   Positioned(
                     top: width - 30,
                     left: width - 80,
@@ -308,7 +308,7 @@ class _DetailsState extends State<Details> {
                           child: Container(
                               margin: const EdgeInsets.fromLTRB(0, 50, 0, 15),
                               child: Text(
-                                widget.item[0]['name'],
+                                widget.item['name'],
                                 style: const TextStyle(
                                   fontSize: 29,
                                   fontWeight: FontWeight.bold,
@@ -316,7 +316,7 @@ class _DetailsState extends State<Details> {
                                 ),
                               )),
                         ),
-                        widget.item[0]['flag'] == '0'
+                        widget.item['flag'] == '0'
                             ? Expanded(
                                 flex: 7,
                                 child: Container(
@@ -358,7 +358,7 @@ class _DetailsState extends State<Details> {
                               )
                             : Container()
                       ]),
-                      widget.item[0]['flag'] == '0'
+                      widget.item['flag'] == '0'
                           ? const Text(
                               'Hiện tại ứng dụng chưa có đủ dữ liệu hình ảnh để tiến hành nhận diện loài cây này',
                               style: TextStyle(
@@ -383,7 +383,7 @@ class _DetailsState extends State<Details> {
                             Expanded(
                                 flex: 6,
                                 child: Text(
-                                  widget.item[0]['science_name'],
+                                  widget.item['science_name'],
                                   style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,
@@ -408,7 +408,7 @@ class _DetailsState extends State<Details> {
                                 )),
                             Expanded(
                                 flex: 6,
-                                child: Text(widget.item[0]['family'],
+                                child: Text(widget.item['family'],
                                     style: const TextStyle(
                                       fontSize: 16,
                                       color: Color(0xFF6A6F7D),
@@ -428,7 +428,7 @@ class _DetailsState extends State<Details> {
                       ),
                       Container(
                         margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                        child: Text(widget.item[0]['description'],
+                        child: Text(widget.item['description'],
                             style: const TextStyle(
                               fontSize: 16,
                               color: Color(0xFF6A6F7D),
@@ -450,7 +450,7 @@ class _DetailsState extends State<Details> {
                                 )),
                             Expanded(
                                 flex: 6,
-                                child: Text(widget.item[0]['parts_used'],
+                                child: Text(widget.item['parts_used'],
                                     style: const TextStyle(
                                       fontSize: 16,
                                       color: Color(0xFF6A6F7D),
@@ -470,7 +470,7 @@ class _DetailsState extends State<Details> {
                       ),
                       Container(
                         margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                        child: Text(widget.item[0]['functions'],
+                        child: Text(widget.item['functions'],
                             style: const TextStyle(
                               fontSize: 16,
                               color: Color(0xFF6A6F7D),
@@ -488,7 +488,7 @@ class _DetailsState extends State<Details> {
                       ),
                       Container(
                         margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                        child: Text(widget.item[0]['usage'],
+                        child: Text(widget.item['usage'],
                             style: const TextStyle(
                               fontSize: 16,
                               color: Color(0xFF6A6F7D),

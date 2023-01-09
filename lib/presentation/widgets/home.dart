@@ -27,6 +27,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  double _currentThres = 0.25;
   @override
   void initState() {
     //initS is the first function that is executed by default when this class is called
@@ -40,7 +41,7 @@ class _HomeState extends State<Home> {
         //future: MongoDatabase.getDataByName(widget.name),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           List data = snapshot.data ?? [];
-          data.map((e) => print(e['name']));
+          //print(data);
 
           if (data.isEmpty) {
             data = [
@@ -134,10 +135,31 @@ class _HomeState extends State<Home> {
                               //     CameraViewSingleton.ratio),
                             ),
                           ),
-                          ...buildBoxes(widget.results),
+                          ...buildBoxes(widget.results
+                              .where(
+                                  (element) => element.score >= _currentThres)
+                              .toList()),
                         ],
                       ),
-
+                      // const Padding(
+                      //   padding: EdgeInsets.only(top: 16.0),
+                      // ),
+                      // //add button to see details
+                      // const Padding(
+                      //   padding: EdgeInsets.only(top: 16.0),
+                      // ),
+                      // Slider(
+                      //   value: _currentThres,
+                      //   max: 1,
+                      //   min: 0.25,
+                      //   divisions: 75,
+                      //   label: _currentThres.toString(),
+                      //   onChanged: (double value) {
+                      //     setState(() {
+                      //       _currentThres = value;
+                      //     });
+                      //   },
+                      // ),
                       //],
                       //),
                       // CircularPercentIndicator(
@@ -193,7 +215,7 @@ class _HomeState extends State<Home> {
                                                       MaterialPageRoute(
                                                           builder: (context) =>
                                                               Details(
-                                                                  item: data)));
+                                                                  item: e)));
                                                 },
                                           child: const Text(
                                             'Xem chi tiết',
