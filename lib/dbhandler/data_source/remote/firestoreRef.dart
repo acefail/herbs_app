@@ -29,13 +29,12 @@ class FirestoreSourceImpl extends FirestoreSource {
     var names = recogs.map((e) => e.label).toList();
     names = names.toSet().toList();
     for (var name in names) {
+      //print(name);
       QuerySnapshot snapshot = await ref.where("name", isEqualTo: name).get();
-      if (!data.contains(snapshot.docs.map((doc) => doc.data()).toList())) {
-        data.addAll(snapshot.docs.map((doc) => doc.data()).toList());
-      }
+      data.addAll(snapshot.docs.map((doc) => doc.data()).toList());
     }
-    var distinctData = data.toSet().toList();
-    return distinctData;
+    //print(data);
+    return data;
   }
 
   static Future<void> insert(String _name, String _image_base64) async {

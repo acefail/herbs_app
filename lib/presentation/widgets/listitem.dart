@@ -128,7 +128,7 @@ class _CategoryState extends State<Category> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => Details(item: [widget.data[index]])),
+                    builder: (context) => Details(item: widget.data[index])),
               );
             },
             child: Card(
